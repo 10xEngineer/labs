@@ -14,4 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "labs"
   gem.require_paths = ["lib"]
   gem.version       = Labs::VERSION
+
+  gem.add_dependency "commander", "~> 4.1.2"
+  gem.add_development_dependency "rspec", "~> 2"
 end

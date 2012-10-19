@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'labs'
+rescue LoadError
+  labs_path = File.expand_path('../../lib', __FILE__)
+
+  $:.unshift(labs_path)
+
+  require 'labs'
+end
+
+# load commands
+require 'labs/vms_commands'
+
+program :name, "lab-vms"
+program :version, Labs::VERSION
+program :description, "10xEngineer Labs VM management"
+program :help_formatter, :compact
+
+default_command :help
+
+Commander::Runner.instance.run
