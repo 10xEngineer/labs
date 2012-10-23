@@ -57,6 +57,8 @@ module Labs
 		def perform_request(method, path, options)
 			headers = default_headers
 
+			Client.debug_output if $verbose
+
 			data = ""
 			data << method.to_s.upcase
 			data << path

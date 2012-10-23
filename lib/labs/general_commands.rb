@@ -3,7 +3,7 @@ require 'logger'
 require 'labs/api_client'
 
 command :status do |c|
-	c.description = "ping Labs API endpoint"
+	c.description = "Verify Labs API endpoint"
 
 	c.action do |args, options|
 		#http://mc.default.labs.dev/

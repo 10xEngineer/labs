@@ -20,4 +20,8 @@ program :help_formatter, :compact
 
 default_command :help
 
+global_option '-V', '--verbose', 'Print out HTTP input/output data' do |file|
+	$verbose = true
+end
+
 Commander::Runner.instance.run!
