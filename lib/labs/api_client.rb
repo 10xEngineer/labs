@@ -5,9 +5,18 @@ require 'openssl'
 require 'base64'
 require 'uri'
 
+begin
+	require 'rbconfig'
+
+	CONFIG = RbConfig::CONFIG
+rescue LoadError	
+end
+
 module Labs
 	class Client
 		include HTTParty
+
+		API_VERSION = "v1"
 
 		format :json
 
@@ -44,7 +53,8 @@ module Labs
 			headers = {
 				'Accept' => 'application/json',
 				'Date' => Time.now.utc.strftime("%a, %e %b %Y %H:%M:%S %Z"),
-				'X-Labs-Token' => @token
+				'X-Labs-Token' => @token,
+				'User-Agent' => "labs-gem/#{Labs::VERSION} (#{CONFIG["host"]}) #{CONFIG["RUBY_INSTALL_NAME"]}/#{RUBY_VERSION}-p#{CONFIG["PATCHLEVEL"]} "
 			}
 		end
 
@@ -71,7 +81,9 @@ module Labs
 			headers.merge(options[:headers]) if options[:headers]
 			options[:headers] = headers
 
-			self.class.send(method.to_s, path, options)
+			full_path = "/#{API_VERSION}" + path
+
+			self.class.send(method.to_s, full_path, options)
 	    end		
 	end	
 end
