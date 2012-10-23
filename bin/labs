@@ -11,9 +11,9 @@ rescue LoadError
 end
 
 # load commands
-require 'labs/vms_commands'
+require 'labs/general_commands'
 
-program :name, "lab-vms"
+program :name, "labs"
 program :version, Labs::VERSION
 program :description, "10xEngineer Labs VM management"
 program :help_formatter, :compact

@@ -16,5 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Labs::VERSION
 
   gem.add_dependency "commander", "~> 4.1.2"
+  gem.add_dependency "httparty", "~> 0.9.0"
+  
   gem.add_development_dependency "rspec", "~> 2"
 end
