@@ -13,11 +13,15 @@ end
 # load commands
 require 'labs/vms_commands'
 
-program :name, "lab-vms"
+program :name, "lab-machines"
 program :version, Labs::VERSION
-program :description, "10xEngineer Labs VM management"
+program :description, "10xEngineer Labs Machine management"
 program :help_formatter, :compact
 
 default_command :help
+
+global_option '-V', '--verbose', 'Print out HTTP input/output data' do |file|
+	$verbose = true
+end
 
 Commander::Runner.instance.run!
