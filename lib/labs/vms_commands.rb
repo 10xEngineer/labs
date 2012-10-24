@@ -1,4 +1,5 @@
 require 'logger'
+require 'terminal-table'
 require 'labs/api_client'
 
 command :create do |c|
@@ -33,14 +34,35 @@ command :create do |c|
 
 		status = client.post(:machine, nil, data)
 
-		puts "Machine '#{status["name"]}' with UUID #{status["uuid"]} #{status["state"]}."
+		puts "Machine '#{status["name"]}' #{status["state"]}."
 	end
 end
 
 command :list do |c|
 	c.description = "list available VMs"
 
-	# FIXME implement
+	c.action do |args, options|
+		client = Labs::Client.new("http://mc.default.labs.dev/",
+			"a7b59762d8d7523f797b1ca83e33", 
+			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
+
+		machines = client.get(:machine, nil)
+
+		rows = []
+		machines.each do |machine|
+			rows << [
+				machine["name"], 
+				machine["state"],
+				machine["uuid"],
+				machine["template"],
+				machine["meta"]["created_at"]
+			]
+		end
+
+		table = Terminal::Table.new :headings => ['Name', 'State', 'UUID','Template','Created'], :rows => rows
+
+		puts table
+	end
 end
 
 command :ssh do |c|
