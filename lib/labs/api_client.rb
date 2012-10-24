@@ -1,8 +1,10 @@
 # encoding: utf-8
 
+require 'active_support/inflector'
 require 'httparty'
 require 'openssl'
 require 'base64'
+require 'yajl'
 require 'uri'
 
 begin
@@ -38,9 +40,29 @@ module Labs
 			response = perform_request(
 			            :get,
 			            path,
-			            default_headers)
+			            {})
 
 			unless response.response.kind_of? Net::HTTPOK
+				raise response.parsed_response["message"]
+			end
+
+			response.parsed_response
+		end
+
+		def post(resource, resource_id = nil, data = {})
+			post_ext resource_path(resource, resource_id), data
+		end
+
+		def post_ext(path, data)
+			options = {}
+			options[:body] = Yajl::Encoder.encode(data)
+
+			response = perform_request(
+                    :post,
+                    path,
+                    options)
+
+			unless response.response.kind_of? Net::HTTPCreated
 				raise response.parsed_response["message"]
 			end
 
@@ -64,6 +86,14 @@ module Labs
 			Base64.encode64(hmac)
 		end
 
+		def resource_path(resource, resource_id = nil, append = nil)
+		  path = "/#{resource.to_s.pluralize}"
+		  path << "/#{resource_id}" if resource_id
+		  path << "/#{append}" if append
+
+		  path
+		end
+
 		def perform_request(method, path, options)
 			headers = default_headers
 
@@ -82,7 +112,7 @@ module Labs
 			options[:headers] = headers
 
 			full_path = "/#{API_VERSION}" + path
-
+			
 			self.class.send(method.to_s, full_path, options)
 	    end		
 	end	

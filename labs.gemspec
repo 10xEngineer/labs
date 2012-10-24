@@ -17,6 +17,8 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "commander", "~> 4.1.2"
   gem.add_dependency "httparty", "~> 0.9.0"
+  gem.add_dependency "activesupport", "~> 3.2.6"
+  gem.add_dependency "yajl-ruby", "~> 1.1.0"
   
   gem.add_development_dependency "rspec", "~> 2"
 end
