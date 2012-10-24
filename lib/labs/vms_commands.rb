@@ -80,5 +80,21 @@ end
 command :destroy do |c|
 	c.description = "pernamently destroy a VM"
 
-	# FIXME implement
+	c.option '--force', "Use the force to actually destroy the machine"
+
+	c.action do |args, options|
+		name = args.shift || abort('Machine name required')
+
+		client = Labs::Client.new("http://mc.default.labs.dev/",
+			"a7b59762d8d7523f797b1ca83e33", 
+			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
+
+		if options.force
+			res = client.delete(:machine, name)
+
+			puts "Machine '#{name}' destroyed."
+		else
+			puts "Not really destroyed. Use the force, Luke."
+		end
+	end	
 end

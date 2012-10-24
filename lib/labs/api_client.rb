@@ -69,6 +69,23 @@ module Labs
 			response.parsed_response
 		end
 
+		def delete(resource, resource_id = nil)
+			delete_ext resource_path(resource, resource_id)
+		end
+
+		def delete_ext(path)
+			response = perform_request(
+                    :delete,
+                    path,
+                    {})
+
+			unless response.response.kind_of? Net::HTTPOK
+				raise response.parsed_response["message"]
+			end
+
+			response.parsed_response
+		end
+
 	private
 
 		def default_headers
