@@ -7,6 +7,7 @@ command :create do |c|
 	c.option '--pool POOL', String, 'Use specified resource pool for new machine provisioning'
 	c.option '--template TEMPLATE', String, 'Lab machine template to use'
 	c.option '--size SIZE', String, 'Lab machine size (default 512 MB)'
+	c.option '--name NAME', String, 'Use specific Lab Machine name'
 
 	c.action do |args, options| 
 		options.default :pool => 'default'
@@ -21,8 +22,10 @@ command :create do |c|
 		data = {
 			:pool => options.pool,
 			:template => options.template,
-			:size => machine_size,
+			:size => machine_size
 		}
+
+		data[:name] = options.name if options.name
 
 		client = Labs::Client.new("http://mc.default.labs.dev/",
 			"a7b59762d8d7523f797b1ca83e33", 
@@ -30,7 +33,7 @@ command :create do |c|
 
 		status = client.post(:machine, nil, data)
 
-		puts "Machine #{status["uuid"]} #{status["state"]}."
+		puts "Machine '#{status["name"]}' with UUID #{status["uuid"]} #{status["state"]}."
 	end
 end
 
