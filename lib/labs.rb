@@ -1,5 +1,6 @@
 require "labs/version"
 
+require 'labs/config'
 require 'commander'
 require 'commander/delegates'
 

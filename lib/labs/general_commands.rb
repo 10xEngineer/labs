@@ -1,6 +1,5 @@
 require 'logger'
 require 'terminal-table'
-require 'labs/api_client'
 
 command :configure do |c|
 	c.description = "Setup Labs client configuration"
@@ -14,10 +13,7 @@ command :status do |c|
 	c.description = "Verify Labs API endpoint"
 
 	c.action do |args, options|
-		client = Labs::Client.new("http://mc.default.labs.dev/", 
-			"a7b59762d8d7523f797b1ca83e33", 
-			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
-
+		client = Labs::Config.instance.client
 		status = client.get_ext("/ping")
 
 		puts "ok" if status
@@ -28,10 +24,7 @@ command :pools do |c|
 	c.description = "List available Lab Pools"
 
 	c.action do |args, options|
-		client = Labs::Client.new("http://mc.default.labs.dev/", 
-			"a7b59762d8d7523f797b1ca83e33", 
-			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
-
+		client = Labs::Config.instance.client
 		pools = client.get_ext("/pools")
 
 		pools.each do |pool|
@@ -44,10 +37,7 @@ command :templates do |c|
 	c.description = "List available machine templates"
 
 	c.action do |args, options|
-		client = Labs::Client.new("http://mc.default.labs.dev/", 
-			"a7b59762d8d7523f797b1ca83e33", 
-			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
-
+		client = Labs::Config.instance.client
 		templates = client.get_ext("/templates")
 
 		rows = []

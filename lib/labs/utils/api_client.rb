@@ -15,7 +15,7 @@ rescue LoadError
 end
 
 module Labs
-	class Client
+	class APIClient
 		include HTTParty
 
 		API_VERSION = "v1"
@@ -29,7 +29,7 @@ module Labs
 
 			@digest = OpenSSL::Digest::Digest.new('sha256')
 
-			Client.base_uri HTTParty.normalize_base_uri(@uri.to_s)
+			APIClient.base_uri HTTParty.normalize_base_uri(@uri.to_s)
 		end
 
 		def get(resource, resource_id)

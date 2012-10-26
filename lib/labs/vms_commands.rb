@@ -1,6 +1,5 @@
 require 'logger'
 require 'terminal-table'
-require 'labs/api_client'
 
 command :create do |c|
 	c.description = "create a new VM"
@@ -28,9 +27,7 @@ command :create do |c|
 
 		data[:name] = options.name if options.name
 
-		client = Labs::Client.new("http://mc.default.labs.dev/",
-			"a7b59762d8d7523f797b1ca83e33", 
-			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
+		client = Labs::Config.instance.client
 
 		status = client.post(:machine, nil, data)
 
@@ -42,9 +39,7 @@ command :list do |c|
 	c.description = "list available VMs"
 
 	c.action do |args, options|
-		client = Labs::Client.new("http://mc.default.labs.dev/",
-			"a7b59762d8d7523f797b1ca83e33", 
-			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
+		client = Labs::Config.instance.client
 
 		machines = client.get(:machine, nil)
 
@@ -89,10 +84,7 @@ command :destroy do |c|
 	c.action do |args, options|
 		name = args.shift || abort('Machine name required')
 
-		client = Labs::Client.new("http://mc.default.labs.dev/",
-			"a7b59762d8d7523f797b1ca83e33", 
-			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
-
+		client = Labs::Config.instance.client
 		if options.force
 			res = client.delete(:machine, name)
 
