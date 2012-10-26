@@ -67,6 +67,8 @@ end
 command :ssh do |c|
 	c.description = "open secure shell for a VM"
 
+	# TODO connect to local ssh-agent to check if the necessary key is loaded
+
 	c.action do |args, options|
 		name = args.shift || abort('Machine name required')
 
@@ -100,8 +102,51 @@ command :ssh do |c|
 	end
 end
 
+command :show do |c|
+	c.description = "Show machine details"
+
+	c.action do |args, options|
+		name = args.shift || abort('Machine name required')
+
+		client = Labs::Config.instance.client
+		machine = client.get(:machine, name)
+
+		# TODO refactor ^^
+		if machine["ssh_proxy"]
+			ssh_proxy = machine["ssh_proxy"]
+
+			ssh_str = "ssh "
+			ssh_str << "-p #{ssh_proxy["gateway"]["port"]} " if ssh_proxy["gateway"]["port"] != 22
+			ssh_str << "#{ssh_proxy["proxy_user"]}@#{ssh_proxy["gateway"]["host"]}"
+
+			fingerprint = ssh_proxy["fingerprint"]
+		else
+			ssh_str = "n/a"
+			fingerprint = "n/a"
+		end
+
+
+		rows = []
+
+		rows << ['Name', machine["name"]]
+		rows << ['UUID', machine["uuid"]]
+		rows << ['State', machine["state"]]
+		rows << ['Template', machine["template"]]
+		# TODO
+		rows << ['Snapshots', 1]
+		rows << ['Total Storage', 'n/a']
+		rows << ['SSH client',ssh_str]
+		rows << ['Key fingerprint', fingerprint]
+		rows << ['Created', machine["meta"]["created_at"]]
+		rows << ['Updated', machine["meta"]["updated_at"]]
+
+		table = Terminal::Table.new :headings => ['Key', 'Value'], :rows => rows
+		puts table
+	end
+end
+
 command :snapshot do |c|
-	c.description = "create a new VM snapshot"
+	c.description = "create a new snapshot of the machine"
 
 	# FIXME implement
 end
