@@ -20,7 +20,7 @@ command :status do |c|
 
 		status = client.get_ext("/ping")
 
-		puts "ok" if status["pong"]
+		puts "ok" if status
 	end
 end
 

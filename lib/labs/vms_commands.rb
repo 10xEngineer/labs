@@ -48,20 +48,24 @@ command :list do |c|
 
 		machines = client.get(:machine, nil)
 
-		rows = []
-		machines.each do |machine|
-			rows << [
-				machine["name"], 
-				machine["state"],
-				machine["uuid"],
-				machine["template"],
-				machine["meta"]["created_at"]
-			]
+		unless machines.empty?
+			rows = []
+			machines.each do |machine|
+				rows << [
+					machine["name"], 
+					machine["state"],
+					machine["uuid"],
+					machine["template"],
+					machine["meta"]["created_at"]
+				]
+			end
+
+			table = Terminal::Table.new :headings => ['Name', 'State', 'UUID','Template','Created'], :rows => rows
+
+			puts table
+		else
+			say "No lab machines found"
 		end
-
-		table = Terminal::Table.new :headings => ['Name', 'State', 'UUID','Template','Created'], :rows => rows
-
-		puts table
 	end
 end
 
