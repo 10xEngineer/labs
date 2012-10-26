@@ -1,4 +1,5 @@
 require 'logger'
+require 'terminal-table'
 require 'labs/api_client'
 
 command :configure do |c|
@@ -31,10 +32,37 @@ command :pools do |c|
 			"a7b59762d8d7523f797b1ca83e33", 
 			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
 
-		status = client.get_ext("/pools")
+		pools = client.get_ext("/pools")
 
-		status.each do |pool|
+		pools.each do |pool|
 			puts pool["name"]
 		end
+	end
+end
+
+command :templates do |c|
+	c.description = "List available machine templates"
+
+	c.action do |args, options|
+		client = Labs::Client.new("http://mc.default.labs.dev/", 
+			"a7b59762d8d7523f797b1ca83e33", 
+			"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
+
+		templates = client.get_ext("/templates")
+
+		rows = []
+		templates.each do |template|
+			rows << [
+				template["name"],
+				template["version"],
+				template["managed"] ? "YES": "n/a",
+				template["description"],
+				template["meta"]["updated_at"]
+			]
+		end
+
+		table = Terminal::Table.new :headings => ['Name', 'Version', 'Managed', 'description','Updated'], :rows => rows
+
+		puts table
 	end
 end
