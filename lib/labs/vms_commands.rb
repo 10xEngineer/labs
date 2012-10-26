@@ -9,7 +9,7 @@ command :create do |c|
 	c.option '--size SIZE', String, 'Lab machine size (default 512 MB)'
 	c.option '--name NAME', String, 'Use specific Lab Machine name'
 
-	c.action do |args, options| 
+	c.action do |args, options|
 		options.default :pool => 'default'
 		options.default :template => 'ubuntu-precise64'
 		options.default :size => '512'
@@ -66,8 +66,38 @@ end
 
 command :ssh do |c|
 	c.description = "open secure shell for a VM"
-	
-	# FIXME implement
+
+	c.action do |args, options|
+		name = args.shift || abort('Machine name required')
+
+		client = Labs::Config.instance.client
+		machine = client.get(:machine, name)
+
+		ssh_proxy = machine["ssh_proxy"]
+
+		if machine["ssh_proxy"]
+			# TODO temporary; open ssh connection
+			# TODO check if the key with selected fingerprint is actually loaded"
+
+			ssh_str = "ssh "
+			ssh_str << "-p #{ssh_proxy["gateway"]["port"]} " if ssh_proxy["gateway"]["port"] != 22
+			ssh_str << "#{ssh_proxy["proxy_user"]}@#{ssh_proxy["gateway"]["host"]}"
+
+			puts "Connection details"
+			puts
+			puts "Host: #{ssh_proxy["gateway"]["host"]}"
+			puts "Port: #{ssh_proxy["gateway"]["port"]}"
+			puts "Username: #{ssh_proxy["proxy_user"]}"
+			puts "Key fingerprint: #{ssh_proxy["fingerprint"]}"
+			puts
+			puts "If you have ssh installed you can use"
+			puts 
+			puts "  % #{ssh_str}"
+			puts
+		else
+			puts "No SSH proxy configured."
+		end
+	end
 end
 
 command :snapshot do |c|
