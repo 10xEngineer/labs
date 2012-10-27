@@ -72,31 +72,25 @@ command :ssh do |c|
 	c.action do |args, options|
 		name = args.shift || abort('Machine name required')
 
+		# TODO raise hell if running on Windows
+
 		client = Labs::Config.instance.client
 		machine = client.get(:machine, name)
 
 		ssh_proxy = machine["ssh_proxy"]
 
 		if machine["ssh_proxy"]
-			# TODO temporary; open ssh connection
-			# TODO check if the key with selected fingerprint is actually loaded"
+			ssh_cmd = []
+			ssh_cmd << "ssh"
+			ssh_cmd << "-o UserKnownHostsFile=/dev/null"
+			ssh_cmd << "-o StrictHostKeyChecking=no"
+			ssh_cmd << "-p #{ssh_proxy["gateway"]["port"]}" if ssh_proxy["gateway"]["port"] != 22
+		 	ssh_cmd << "#{ssh_proxy["proxy_user"]}@#{ssh_proxy["gateway"]["host"]}"
 
-			ssh_str = "ssh "
-			ssh_str << "-p #{ssh_proxy["gateway"]["port"]} " if ssh_proxy["gateway"]["port"] != 22
-			ssh_str << "#{ssh_proxy["proxy_user"]}@#{ssh_proxy["gateway"]["host"]}"
+			command = ssh_cmd.join ' '		 	
 
-			puts "Connection details"
-			puts
-			puts "Host: #{ssh_proxy["gateway"]["host"]}"
-			puts "Port: #{ssh_proxy["gateway"]["port"]}"
-			puts "Username: #{ssh_proxy["proxy_user"]}"
-			puts "Key fingerprint: #{ssh_proxy["fingerprint"]}"
-			puts
-			puts "If you have ssh installed you can use"
-			puts 
-			puts "  % #{ssh_str}"
-			puts
-		else
+			exec command
+		 else
 			puts "No SSH proxy configured."
 		end
 	end
