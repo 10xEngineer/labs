@@ -1,5 +1,6 @@
 require 'logger'
 require 'terminal-table'
+require 'labs/utils/ssh'
 
 command :create do |c|
 	c.description = "create a new VM"
@@ -67,25 +68,39 @@ end
 command :ssh do |c|
 	c.description = "open secure shell for a VM"
 
-	# TODO connect to local ssh-agent to check if the necessary key is loaded
+	c.option '--identity IDENTITY', String, 'Select a file with the RSA/DSA key'
 
 	c.action do |args, options|
 		name = args.shift || abort('Machine name required')
 
 		# TODO raise hell if running on Windows
-
 		client = Labs::Config.instance.client
 		machine = client.get(:machine, name)
 
 		ssh_proxy = machine["ssh_proxy"]
 
+		unless options.identity || Labs::SSH.agent_key(ssh_proxy["fingerprint"])
+			abort %Q{Unable to find SSH key required to access the lab machine.
+
+Either load the keys into ssh-agent using
+
+	% ssh-add path-to-registered-key
+
+or specify it directly using option --identity
+
+	% lab-machines ssh #{name} --identity path-to-registered-key
+
+}
+		end
+
 		if machine["ssh_proxy"]
 			ssh_cmd = []
 			ssh_cmd << "ssh"
 			ssh_cmd << "-o UserKnownHostsFile=/dev/null"
-			ssh_cmd << "-o StrictHostKeyChecking=no"
+			ssh_cmd << "-o StrictHostKeyChecking=no"			
 			ssh_cmd << "-p #{ssh_proxy["gateway"]["port"]}" if ssh_proxy["gateway"]["port"] != 22
-		 	ssh_cmd << "#{ssh_proxy["proxy_user"]}@#{ssh_proxy["gateway"]["host"]}"
+			ssh_cmd << "-i #{options.identity}" if options.identity
+		 	ssh_cmd << "#{ssh_proxy["proxy_user"]}@#{ssh_proxy["gateway"]["host"]}"		 	
 
 			command = ssh_cmd.join ' '		 	
 
