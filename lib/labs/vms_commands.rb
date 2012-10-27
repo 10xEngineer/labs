@@ -71,7 +71,10 @@ command :ssh do |c|
 	c.option '--identity IDENTITY', String, 'Select a file with the RSA/DSA key'
 
 	c.action do |args, options|
-		name = args.shift || abort('Machine name required')
+		name = args.shift
+		name = ENV["LAB_MACHINE"] unless name
+
+		abort('Machine name required') unless name
 
 		# TODO raise hell if running on Windows
 		client = Labs::Config.instance.client
@@ -115,7 +118,10 @@ command :show do |c|
 	c.description = "Show machine details"
 
 	c.action do |args, options|
-		name = args.shift || abort('Machine name required')
+		name = args.shift
+		name = ENV["LAB_MACHINE"] unless name
+
+		abort('Machine name required') unless name
 
 		client = Labs::Config.instance.client
 		machine = client.get(:machine, name)
@@ -166,7 +172,10 @@ command :destroy do |c|
 	c.option '--force', "Use the force to actually destroy the machine"
 
 	c.action do |args, options|
-		name = args.shift || abort('Machine name required')
+		name = args.shift
+		name = ENV["LAB_MACHINE"] unless name
+
+		abort('Machine name required') unless name
 
 		client = Labs::Config.instance.client
 		if options.force
