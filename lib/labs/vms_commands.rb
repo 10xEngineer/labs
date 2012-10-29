@@ -98,7 +98,8 @@ or specify it directly using option --identity
 
 		if machine["ssh_proxy"]
 			ssh_cmd = []
-			ssh_cmd << "ssh"
+			ssh_cmd << "ssh -A"
+			ssh_cmd << "-o LogLevel=ERROR"
 			ssh_cmd << "-o UserKnownHostsFile=/dev/null"
 			ssh_cmd << "-o StrictHostKeyChecking=no"			
 			ssh_cmd << "-p #{ssh_proxy["gateway"]["port"]}" if ssh_proxy["gateway"]["port"] != 22
