@@ -47,7 +47,7 @@ command :templates do |c|
 				template["version"],
 				template["managed"] ? "YES": "n/a",
 				template["description"],
-				template["meta"]["updated_at"]
+				template["updated_at"]
 			]
 		end
 

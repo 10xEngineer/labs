@@ -52,7 +52,7 @@ command :list do |c|
 					machine["state"],
 					machine["uuid"],
 					machine["template"],
-					machine["meta"]["created_at"]
+					machine["created_at"]
 				]
 			end
 
@@ -153,8 +153,8 @@ command :show do |c|
 		rows << ['Total Storage', 'n/a']
 		rows << ['SSH client',ssh_str]
 		rows << ['Key fingerprint', fingerprint]
-		rows << ['Created', machine["meta"]["created_at"]]
-		rows << ['Updated', machine["meta"]["updated_at"]]
+		rows << ['Created', machine["created_at"]]
+		rows << ['Updated', machine["updated_at"]]
 
 		table = Terminal::Table.new :headings => ['Key', 'Value'], :rows => rows
 		puts table
