@@ -1,5 +1,9 @@
 require 'logger'
+require 'action_view'
 require 'terminal-table'
+
+# FIXME get rid of action_view (actionpack)
+include ActionView::Helpers::NumberHelper
 
 command :list do |c|
 	c.description = "list available snapshots"
@@ -20,7 +24,7 @@ command :list do |c|
 			snapshots.each do |snapshot|
 				rows << [
 					snapshot["name"],
-					snapshot["used_size"],
+					number_to_human_size(snapshot["used_size"]),
 					snapshot["created_at"]
 				]
 			end

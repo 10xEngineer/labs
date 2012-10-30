@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "terminal-table", "~> 1.4.5"
   gem.add_dependency "net-ssh", "~> 2.6.1"
   gem.add_dependency "sshkey", "~> 1.3.1"
+  gem.add_dependency "actionpack", "~> 3.2.8"
   
   gem.add_development_dependency "rspec", "~> 2"
 end
