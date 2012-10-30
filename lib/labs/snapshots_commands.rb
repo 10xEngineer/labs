@@ -2,6 +2,8 @@ require 'logger'
 require 'action_view'
 require 'terminal-table'
 
+# TODO validate snapshot name
+
 # FIXME get rid of action_view (actionpack)
 include ActionView::Helpers::NumberHelper
 
@@ -24,7 +26,7 @@ command :create do |c|
 		client = Labs::Config.instance.client
 		snapshot = client.post_ext("/machines/#{name}/snapshots", data)
 
-		puts "Snapshot '#{snapshot['name']} created."
+		puts "Snapshot '#{snapshot['name']}' created."
 	end
 end
 
@@ -68,5 +70,21 @@ end
 command :destroy do |c|
 	c.description = "destroy a snapshot"
 
-	# FIXME implement
+	c.option '--name NAME', String, "Snapshot name"
+
+	c.action do |args, options|
+		options.default :name => nil
+
+		name = args.shift
+		name = ENV["LAB_MACHINE"] unless name
+
+		abort('Machine name required') unless name
+
+		abort "Snapshot name missing" unless options.name
+
+		client = Labs::Config.instance.client
+		snapshot = client.delete_ext("/machines/#{name}/snapshots/#{options.name}")
+
+		puts "Snapshot '#{options.name}' destroyed."
+	end
 end
