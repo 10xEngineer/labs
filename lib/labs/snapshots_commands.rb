@@ -57,6 +57,8 @@ command :list do |c|
 			table = Terminal::Table.new :headings => ['name', 'size', 'created'], :rows => rows
 
 			puts table
+		else
+			puts "No snapshots found"
 		end
 	end
 end
