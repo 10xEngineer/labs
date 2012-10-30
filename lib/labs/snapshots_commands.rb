@@ -5,6 +5,29 @@ require 'terminal-table'
 # FIXME get rid of action_view (actionpack)
 include ActionView::Helpers::NumberHelper
 
+command :create do |c|
+	c.description = "create new snapshot"
+
+	c.option '--name NAME', String, "Snapshot name"
+
+	c.action do |args, options|
+		options.default :name => nil
+
+		name = args.shift
+		name = ENV["LAB_MACHINE"] unless name
+
+		abort('Machine name required') unless name
+
+		data = {}
+		data["name"] = options.name if options.name
+
+		client = Labs::Config.instance.client
+		snapshot = client.post_ext("/machines/#{name}/snapshots", data)
+
+		puts "Snapshot '#{snapshot['name']} created."
+	end
+end
+
 command :list do |c|
 	c.description = "list available snapshots"
 
