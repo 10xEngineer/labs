@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'labs'
+rescue LoadError
+  labs_path = File.expand_path('../../lib', __FILE__)
+
+  $:.unshift(labs_path)
+
+  require 'labs'
+end
+
+# load commands
+require 'labs/snapshots_commands'
+
+program :name, "lab-snapshots"
+program :version, Labs::VERSION
+program :description, "10xEngineer Labs Machine management"
+program :help_formatter, :compact
+
+default_command :help
+
+global_option '-V', '--verbose', 'Print out HTTP input/output data' do |file|
+	$verbose = true
+end
+
+Commander::Runner.instance.run!
