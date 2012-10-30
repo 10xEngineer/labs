@@ -1,6 +1,7 @@
 require 'logger'
 require 'action_view'
 require 'terminal-table'
+require 'labs/utils/name'
 
 # TODO validate snapshot name
 
@@ -15,10 +16,7 @@ command :create do |c|
 	c.action do |args, options|
 		options.default :name => nil
 
-		name = args.shift
-		name = ENV["LAB_MACHINE"] unless name
-
-		abort('Machine name required') unless name
+		name = get_machine_name(args)
 
 		data = {}
 		data["name"] = options.name if options.name
@@ -34,10 +32,7 @@ command :list do |c|
 	c.description = "list available snapshots"
 
 	c.action do |args, options|
-		name = args.shift
-		name = ENV["LAB_MACHINE"] unless name
-
-		abort('Machine name required') unless name
+		name = get_machine_name(args)
 
 		client = Labs::Config.instance.client
 
@@ -77,10 +72,7 @@ command :destroy do |c|
 	c.action do |args, options|
 		options.default :name => nil
 
-		name = args.shift
-		name = ENV["LAB_MACHINE"] unless name
-
-		abort('Machine name required') unless name
+		name = get_machine_name(args)
 
 		abort "Snapshot name missing" unless options.name
 
