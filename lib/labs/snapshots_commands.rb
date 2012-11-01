@@ -58,12 +58,6 @@ command :list do |c|
 	end
 end
 
-command :diff do |c|
-	c.description = "show changes between two snapshots"
-
-	# FIXME implement
-end
-
 command :destroy do |c|
 	c.description = "destroy a snapshot"
 

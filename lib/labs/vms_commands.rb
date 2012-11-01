@@ -156,12 +156,6 @@ command :show do |c|
 	end
 end
 
-command :snapshot do |c|
-	c.description = "create a new snapshot of the machine"
-
-	# FIXME implement
-end
-
 command :destroy do |c|
 	c.description = "pernamently destroy a VM"
 
