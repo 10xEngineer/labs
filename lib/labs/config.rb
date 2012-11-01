@@ -14,10 +14,21 @@ module Labs
 
 		def self.instance
 			unless @@instance
-				# FIXME read config
-				@@instance = Config.new("http://mc.default.labs.dev/",
-				"a7b59762d8d7523f797b1ca83e33", 
-				"0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af")
+				config_file =  File.join(ENV['HOME'], Labs::CONFIG_FILE)
+
+				unless File.exists?(config_file)
+					abort "No configuration avaliable. Run 'labs configure' first."
+				end
+
+				config = YAML::load(File.open(config_file))
+
+				unless config[:endpoint] && config[:token] && config[:secret]
+					abort "Invalid configuration file."
+				end
+
+				@@instance = Config.new(config[:endpoint],
+					config[:token],
+					config[:secret])
 			end
 
 			return @@instance

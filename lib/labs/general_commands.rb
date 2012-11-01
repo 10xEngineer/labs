@@ -1,11 +1,55 @@
+require 'yaml'
 require 'logger'
 require 'terminal-table'
 
 command :configure do |c|
-	c.description = "Setup Labs client configuration"
+	c.description = "Setup Labs API client configuration"
+
+	c.option '--endpoint ENDPOINT', String, 'Microcloud endpoint URL'
 
 	c.action do |args, options|
-		raise 'not implemented'
+		options.default :endpoint => "http://eu-1.aws.10xlabs.net/"
+		config_file = File.join(ENV['HOME'], Labs::CONFIG_FILE)
+
+		if File.exists?(config_file)
+			abort "Default configuration file exists: #{config_file}"
+		else
+			say "Running 'labs configure' for first time."
+		end
+
+		puts
+		puts "You API credentials are available from http://manage.10xlabs.net/"
+		puts
+
+		auth_token = ask("API token: ")
+		auth_secret = ask("API secret: ")
+
+		puts
+
+		puts "Using '#{options.endpoint}' as default endpoint."
+		puts
+
+		begin
+			@client = Labs::APIClient.new(options.endpoint, auth_token, auth_secret)
+
+			res = @client.get_ext("/ping")
+			say "Credentials successfully verified." if res["status"] == "ok"
+
+			config = {
+				:endpoint => options.endpoint,
+				:token => auth_token,
+				:secret => auth_secret
+			}
+
+			File.open(config_file, 'w') do |f|
+				f.puts(YAML.dump(config))
+			end
+
+			puts
+			say "Default configuration stored in #{config_file}."
+		rescue => e
+			say "Unable to configure Labs CLI: #{e.message}"
+		end
 	end
 end
 
