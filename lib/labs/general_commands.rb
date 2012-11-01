@@ -45,7 +45,6 @@ command :configure do |c|
 				f.puts(YAML.dump(config))
 			end
 
-			puts
 			say "Default configuration stored in #{config_file}."
 		rescue => e
 			say "Unable to configure Labs CLI: #{e.message}"
