@@ -22,7 +22,7 @@ Before you can use Labs CLI for a first time, run configuration.
 
 	Default configuration stored in /home/luke/.labs.rc.
 
-## Create & access first fab machine
+## Create & access first Lab machine
 
 	% lab-machines create
 	Machine 'black-pony' created.
@@ -38,4 +38,16 @@ Before you can use Labs CLI for a first time, run configuration.
 	Welcome to Ubuntu 12.04.1 LTS (GNU/Linux 3.2.0-30-virtual i686)
 
 	lab@black-pony: $
+
+## Copyright 
+
+Copyright © 2012, 10xEngineer Ltd. All rights reserved.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
