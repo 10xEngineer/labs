@@ -6,6 +6,8 @@ Labs CLI is distribute as RubyGems package. To install it you need to have Ruby 
 
 	gem install labs
 
+For more about Labs, check http://10xengineer.me/labs/ 
+
 ## Configure
 
 Before you can use Labs CLI for a first time, run configuration.
@@ -21,6 +23,8 @@ Before you can use Labs CLI for a first time, run configuration.
 	Using 'http://eu-1-aws.10xlabs.net' as default endpoint.
 
 	Default configuration stored in /home/luke/.labs.rc.
+
+You can get/regenerate API credentials in your user profile under 'API Keys' menu item.
 
 ## Create & access first Lab machine
 
@@ -38,6 +42,9 @@ Before you can use Labs CLI for a first time, run configuration.
 	Welcome to Ubuntu 12.04.1 LTS (GNU/Linux 3.2.0-30-virtual i686)
 
 	lab@black-pony: $
+	lab@black-pony: $ exit
+
+Currently all machines have a 'default' SSH key from your profile.
 
 ## Copyright 
 
