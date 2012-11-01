@@ -1,5 +1,7 @@
 # 10xEngineer Labs Command Line Interface (CLI)
 
+Labs API and CLI currently in public BETA (as of Nov 1, 2012).
+
 ## Install
 
 Labs CLI is distribute as RubyGems package. To install it you need to have Ruby installed (preferable 1.9.3)
