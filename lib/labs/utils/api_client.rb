@@ -130,7 +130,13 @@ module Labs
 
 			full_path = "/#{API_VERSION}" + path
 			
-			self.class.send(method.to_s, full_path, options)
+			res = self.class.send(method.to_s, full_path, options)
+
+			if [500,502,503,504].include?(res.response.code.to_i)
+				raise "API internal error #{res.response.code}"
+			end
+
+			res
 	    end		
 	end	
 end
