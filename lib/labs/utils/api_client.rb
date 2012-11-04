@@ -134,7 +134,11 @@ module Labs
 			res = self.class.send(method.to_s, full_path, options)
 
 			if [500,502,503,504].include?(res.response.code.to_i)
-				raise "API internal error #{res.response.code}"
+				if res.parsed_response && res.parsed_response["message"]
+					raise "API internal error #{res.response.code}: #{res.parsed_response["message"]}"
+				else
+					raise "API internal error #{res.response.code}"
+				end
 			end
 
 			res
