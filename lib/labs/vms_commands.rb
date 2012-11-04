@@ -126,7 +126,7 @@ command :show do |c|
 		if machine["ssh_proxy"]
 			ssh_proxy = machine["ssh_proxy"]
 
-			ssh_str = "ssh "
+			ssh_str = "ssh -A "
 			ssh_str << "-p #{ssh_proxy["gateway"]["port"]} " if ssh_proxy["gateway"]["port"] != 22
 			ssh_str << "#{ssh_proxy["proxy_user"]}@#{ssh_proxy["gateway"]["host"]}"
 
