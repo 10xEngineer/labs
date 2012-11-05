@@ -1,4 +1,5 @@
 require 'logger'
+require 'rbconfig'
 require 'terminal-table'
 require 'labs/utils/ssh'
 require 'labs/utils/name'
@@ -69,8 +70,6 @@ end
 command :ssh do |c|
 	c.description = "open secure shell for a VM"
 
-	c.option '--identity IDENTITY', String, 'Select a file with the RSA/DSA key'
-
 	c.action do |args, options|
 		name = get_machine_name(args)
 
@@ -80,17 +79,13 @@ command :ssh do |c|
 
 		ssh_proxy = machine["ssh_proxy"]
 
-		unless options.identity || Labs::SSH.agent_key(ssh_proxy["fingerprint"])
+		is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
+		unless (is_windows || Labs::SSH.agent_key(ssh_proxy["fingerprint"]))
 			abort %Q{Unable to find SSH key required to access the lab machine.
 
-Either load the keys into ssh-agent using
+Load the key into ssh-agent using
 
 	% ssh-add path-to-registered-key
-
-or specify it directly using option --identity
-
-	% lab-machines ssh #{name} --identity path-to-registered-key
-
 }
 		end
 
