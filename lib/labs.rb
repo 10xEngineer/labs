@@ -3,7 +3,7 @@ require "labs/version"
 require 'labs/config'
 require 'commander'
 require 'commander/delegates'
-
+require 'labs/commands'
 #
 # snippet from commander:lib/commander/import.rb needed when manually calling
 # run! instead of relying on at_exit { run! } (sic!).
@@ -17,3 +17,5 @@ $terminal.wrap_at = HighLine::SystemExtensions.terminal_size.first - 5 rescue 80
 module Labs
 	CONFIG_FILE = ".labs.rc"
 end
+
+

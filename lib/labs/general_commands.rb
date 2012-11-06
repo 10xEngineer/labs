@@ -1,6 +1,15 @@
+require 'pry'
 require 'yaml'
 require 'logger'
 require 'terminal-table'
+
+command :shell do |c|
+	c.action do |args, options|
+		# Pry.start binding, :commands => command_set
+
+		Pry.start TOPLEVEL_BINDING, :commands => Labs::Commands, :prompt_name => "labs"
+	end
+end
 
 command :configure do |c|
 	c.description = "Setup Labs API client configuration"

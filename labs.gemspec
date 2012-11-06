@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Labs::VERSION
 
+  gem.add_dependency "pry", "~> 0.9.10"
   gem.add_dependency "commander", "~> 4.1.2"
   gem.add_dependency "httparty", "~> 0.9.0"
   gem.add_dependency "activesupport", "~> 3.2.6"
