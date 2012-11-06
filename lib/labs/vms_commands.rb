@@ -138,6 +138,7 @@ command :show do |c|
 		rows << ['UUID', machine["uuid"]]
 		rows << ['State', machine["state"]]
 		rows << ['Template', machine["template"]]
+		rows << ['IPv4', machine["ipv4_address"]]
 		# TODO
 		rows << ['Snapshots', 1]
 		rows << ['Total Storage', 'n/a']
