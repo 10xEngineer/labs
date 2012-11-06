@@ -108,6 +108,47 @@ Load the key into ssh-agent using
 	end
 end
 
+command :snapshot do |c|
+	c.description = "create new snapshot"
+
+	c.option '--name NAME', String, "Snapshot name"
+
+	c.action do |args, options|
+		options.default :name => nil
+
+		name = get_machine_name(args)
+
+		data = {}
+		data["name"] = options.name if options.name
+
+		client = Labs::Config.instance.client
+		snapshot = client.post_ext("/machines/#{name}/snapshots", data)
+
+		puts "Snapshot '#{snapshot['name']}' created."
+	end
+end
+
+command :revert do |c|
+	c.description = "Revert machine to the most recent snapshot"
+
+	c.option '--name NAME', String, "Snapshot name"	
+
+	c.action do |args, options|
+		options.default :name => "head"
+
+		name = get_machine_name(args)
+
+		client = Labs::Config.instance.client
+		data = {
+			:name => options.name
+		}
+
+		snapshot = client.put_ext("/machines/#{name}/snapshots", data)
+
+		puts "Machine '#{name}' reverted to snapshot '#{snapshot["name"]}'"
+	end
+end
+
 command :show do |c|
 	c.description = "Show machine details"
 

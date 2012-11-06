@@ -69,6 +69,26 @@ module Labs
 			response.parsed_response
 		end
 
+		def put(resource, resource_id = nil, data = {})
+			put_ext resource_path(resource, resource_id), data
+		end
+
+		def put_ext(path, data)
+			options = {}
+			options[:body] = Yajl::Encoder.encode(data)
+
+			response = perform_request(
+                    :put,
+                    path,
+                    options)
+
+			unless response.response.kind_of? Net::HTTPOK
+				raise response.parsed_response["message"]
+			end
+
+			response.parsed_response
+		end
+
 		def delete(resource, resource_id = nil)
 			delete_ext resource_path(resource, resource_id)
 		end
