@@ -6,10 +6,11 @@ module Labs
 	class Config
 		@@instance = nil
 
-		attr_reader :client
+		attr_reader :client, :default_key
 
-		def initialize(endpoint, token, secret)
+		def initialize(endpoint, token, secret, key)
 			@client = Labs::APIClient.new(endpoint, token, secret)
+			@default_key = key
 		end
 
 		def self.instance
@@ -28,7 +29,8 @@ module Labs
 
 				@@instance = Config.new(config[:endpoint],
 					config[:token],
-					config[:secret])
+					config[:secret],
+					config[:default_key])
 			end
 
 			return @@instance

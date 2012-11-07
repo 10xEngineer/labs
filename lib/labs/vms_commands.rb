@@ -17,7 +17,7 @@ command :create do |c|
 		options.default :pool => 'default'
 		options.default :template => 'ubuntu-precise64'
 		options.default :size => '512'
-		options.default :key => 'default'
+		options.default :key => Labs::Config.instance.default_key || "default"
 
 		machine_size = options.size.to_i
 		unless machine_size % 256 == 0 and machine_size >= 512
