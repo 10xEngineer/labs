@@ -83,13 +83,47 @@ command :ssh do |c|
 		ssh_proxy = machine["ssh_proxy"]
 
 		is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
-		unless (is_windows || Labs::SSH.agent_key(ssh_proxy["fingerprint"]))
-			abort %Q{Unable to find SSH key required to access the lab machine.
 
-Load the key into ssh-agent using
+		begin
+			key = Labs::SSH.agent_key(ssh_proxy["fingerprint"])
+		rescue Net::SSH::Authentication::AgentNotAvailable
+			if is_windows
+				abort %Q{SSH Agent is not running.
 
-	% ssh-add path-to-registered-key
-}
+Run Pageant, SSH authentication agent for Windows and add registered key. 
+
+For more information on how to get started with 10xEngineer Labs, visit
+http://help.10xengineer.me/categories/20068923-labs-documentation
+				}
+			else
+				abort %Q{SSH Agent is not running.
+
+Please, run ssh-agent.
+
+For more information on how to get started with 10xEngineer Labs, visit
+http://help.10xengineer.me/categories/20068923-labs-documentation
+				}
+			end
+		end
+
+		unless key
+			if is_windows
+				abort %Q{Registered SSH key not loaded in SSH Agent
+
+Load the key into Pageant.
+
+For more information, visit
+http://help.10xengineer.me/categories/20068923-labs-documentation}
+			else
+				abort %Q{Registered SSH key not loaded in SSH Agent.
+
+	Load the key into ssh-agent using
+
+		% ssh-add path-to-registered-key
+
+	For more information, visit
+	http://help.10xengineer.me/categories/20068923-labs-documentation}
+			end
 		end
 
 		if machine["ssh_proxy"]
@@ -104,7 +138,13 @@ Load the key into ssh-agent using
 
 			command = ssh_cmd.join ' '		 	
 
-			exec command
+			unless is_windows
+				exec command
+			else
+				require 'labs/win32/ssh_exec'
+
+				Labs::Win32::win_ssh ssh_proxy["proxy_user"], ssh_proxy["gateway"]["host"]
+			end
 		 else
 			puts "No SSH proxy configured."
 		end

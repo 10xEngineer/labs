@@ -48,6 +48,12 @@ You can get/regenerate API credentials in your user profile under 'API Keys' men
 
 Currently all machines have a 'default' SSH key from your profile.
 
+## Windows support
+
+Starting version `0.11.0` you can install indepent gem `labs-win32` which includes SSH wrapper for MS Windows platform.
+
+Wrapper uses and re-distributes [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) (and other tools ). 
+
 ## Copyright 
 
 Copyright © 2012, 10xEngineer Ltd. All rights reserved.

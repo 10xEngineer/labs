@@ -9,10 +9,10 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Interact with Labs API to create and manage automated lab environments}
   gem.homepage      = "http://10xengineer.me/labs"
 
-  gem.files         = Labs::SpecHelper.unix_files
+  gem.files         = Labs::SpecHelper.all_files
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "labs"
+  gem.name          = "labs-win32"
   gem.require_paths = ["lib"]
   gem.version       = Labs::VERSION
 
