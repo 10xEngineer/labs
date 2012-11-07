@@ -11,11 +11,13 @@ command :create do |c|
 	c.option '--template TEMPLATE', String, 'Lab machine template to use'
 	c.option '--size SIZE', String, 'Lab machine size (default 512 MB)'
 	c.option '--name NAME', String, 'Use specific Lab Machine name'
+	c.option '--key KEY', String, 'SSH Key name to use (as registered within management panel)'
 
 	c.action do |args, options|
 		options.default :pool => 'default'
 		options.default :template => 'ubuntu-precise64'
 		options.default :size => '512'
+		options.default :key => 'default'
 
 		machine_size = options.size.to_i
 		unless machine_size % 256 == 0 and machine_size >= 512
@@ -25,7 +27,8 @@ command :create do |c|
 		data = {
 			:pool => options.pool,
 			:template => options.template,
-			:size => machine_size
+			:size => machine_size,
+			:key => options.key
 		}
 
 		data[:name] = options.name if options.name
