@@ -6,11 +6,12 @@ module Labs
 	class Config
 		@@instance = nil
 
-		attr_reader :client, :default_key
+		attr_reader :client, :default_key, :keys
 
-		def initialize(endpoint, token, secret, key)
-			@client = Labs::APIClient.new(endpoint, token, secret)
-			@default_key = key
+		def initialize(config)
+			@client = Labs::APIClient.new(config[:endpoint], config[:token], config[:secret])
+			@default_key = config[:default_key]
+			@keys = config[:keys] || {}
 		end
 
 		def self.instance
@@ -27,10 +28,7 @@ module Labs
 					abort "Invalid configuration file."
 				end
 
-				@@instance = Config.new(config[:endpoint],
-					config[:token],
-					config[:secret],
-					config[:default_key])
+				@@instance = Config.new(config)
 			end
 
 			return @@instance

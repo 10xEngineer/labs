@@ -18,13 +18,28 @@ command :configure do |c|
 		end
 
 		puts
-		puts "You API credentials are available from http://manage.10xlabs.net/"
+		puts "You can get API credentials from http://manage.10xlabs.net/"
 		puts
 
 		auth_token = ask("API token: ")
 		auth_secret = ask("API secret: ")
 
 		puts
+		puts "Identify registered SSH Key"
+		puts
+
+		default_key = ask("Alias of SSH Key to use: ") {|q| q.default = "default"}
+		key_location = ask("Path to private-part of SSH Key (empty for ssh-agent only): ")
+
+		unless key_location.empty?
+			key_location = key_location.rchomp('"').chomp('"')
+		else
+			key_location = nil
+		end
+
+		if key_location && !File.exists?(key_location)
+			abort "Unable to open #{key_location}"
+		end
 
 		puts "Using '#{options.endpoint}' as default endpoint."
 		puts
@@ -38,8 +53,14 @@ command :configure do |c|
 			config = {
 				:endpoint => options.endpoint,
 				:token => auth_token,
-				:secret => auth_secret
+				:secret => auth_secret,
+				:default_key => default_key
 			}
+
+			if key_location
+				config[:keys] = {}
+				config[:keys][default_key] = key_location
+			end
 
 			File.open(config_file, 'w') do |f|
 				f.puts(YAML.dump(config))

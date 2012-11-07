@@ -87,15 +87,8 @@ command :ssh do |c|
 		begin
 			key = Labs::SSH.agent_key(ssh_proxy["fingerprint"])
 		rescue Net::SSH::Authentication::AgentNotAvailable
-			if is_windows
-				abort %Q{SSH Agent is not running.
-
-Run Pageant, SSH authentication agent for Windows and add registered key. 
-
-For more information on how to get started with 10xEngineer Labs, visit
-http://help.10xengineer.me/categories/20068923-labs-documentation
-				}
-			else
+			# On windows, Pageant is use explicitely
+			unless is_windows
 				abort %Q{SSH Agent is not running.
 
 Please, run ssh-agent.
@@ -107,22 +100,21 @@ http://help.10xengineer.me/categories/20068923-labs-documentation
 		end
 
 		unless key
-			if is_windows
-				abort %Q{Registered SSH key not loaded in SSH Agent
-
-Load the key into Pageant.
+			file_location = Labs::Config.instance.keys[Labs::Config.instance.default_key] || ""
+			if is_windows && !File.exists?(file_location)
+				abort %Q{Registered SSH Key for machine is not loaded in Pageant!
 
 For more information, visit
 http://help.10xengineer.me/categories/20068923-labs-documentation}
-			else
+			elsif !is_windows
 				abort %Q{Registered SSH key not loaded in SSH Agent.
 
-	Load the key into ssh-agent using
+Load the key into ssh-agent using
 
-		% ssh-add path-to-registered-key
+	% ssh-add path-to-registered-key
 
-	For more information, visit
-	http://help.10xengineer.me/categories/20068923-labs-documentation}
+For more information, visit
+http://help.10xengineer.me/categories/20068923-labs-documentation}
 			end
 		end
 
@@ -143,7 +135,7 @@ http://help.10xengineer.me/categories/20068923-labs-documentation}
 			else
 				require 'labs/win32/ssh_exec'
 
-				Labs::Win32::win_ssh ssh_proxy["proxy_user"], ssh_proxy["gateway"]["host"]
+				Labs::Win32::win_ssh ssh_proxy["proxy_user"], ssh_proxy["gateway"]["host"], Labs::Config.instance.keys[Labs::Config.instance.default_key]
 			end
 		 else
 			puts "No SSH proxy configured."
