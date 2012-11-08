@@ -13,6 +13,7 @@ include Commander::UI::AskForClass
 include Commander::Delegates
 
 $terminal.wrap_at = HighLine::SystemExtensions.terminal_size.first - 5 rescue 80 if $stdin.tty?
+$is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
 
 class String
   def rchomp(sep = $/)

@@ -73,8 +73,7 @@ command :configure do |c|
 	end
 end
 
-is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
-if is_windows
+if $is_windows
 	command :keygen do |c|
 		c.description = "Run SSH Key generator"
 

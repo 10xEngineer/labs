@@ -94,13 +94,11 @@ command :ssh do |c|
 
 		ssh_proxy = machine["ssh_proxy"]
 
-		is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
-
 		begin
 			key = Labs::SSH.agent_key(ssh_proxy["fingerprint"])
 		rescue Net::SSH::Authentication::AgentNotAvailable
 			# On windows, Pageant is use explicitely
-			unless is_windows
+			unless $is_windows
 				abort %Q{SSH Agent is not running.
 
 Please, run ssh-agent.
@@ -113,12 +111,12 @@ http://help.10xengineer.me/categories/20068923-labs-documentation
 
 		unless key
 			file_location = Labs::Config.instance.keys[Labs::Config.instance.default_key] || ""
-			if is_windows && !File.exists?(file_location)
+			if $is_windows && !File.exists?(file_location)
 				abort %Q{Registered SSH Key for machine is not configure or loaded in Pageant!
 
 For more information, visit
 http://help.10xengineer.me/categories/20068923-labs-documentation}
-			elsif !is_windows
+			elsif !$is_windows
 				abort %Q{Registered SSH key not loaded in SSH Agent.
 
 Load the key into ssh-agent using
@@ -142,7 +140,7 @@ http://help.10xengineer.me/categories/20068923-labs-documentation}
 
 			command = ssh_cmd.join ' '		 	
 
-			unless is_windows
+			unless $is_windows
 				exec command
 			else
 				require 'labs/win32/ssh_exec'
