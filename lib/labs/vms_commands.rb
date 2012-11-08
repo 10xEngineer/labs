@@ -44,6 +44,8 @@ end
 command :list do |c|
 	c.description = "list available VMs"
 
+	c.option '--uuid', 'Display extended machine list (with UUIDs)'
+
 	c.action do |args, options|
 		client = Labs::Config.instance.client
 
@@ -52,16 +54,26 @@ command :list do |c|
 		unless machines.empty?
 			rows = []
 			machines.each do |machine|
-				rows << [
+				row = [
 					machine["name"], 
-					machine["state"],
-					machine["uuid"],
-					machine["template"],
-					machine["created_at"]
+					machine["state"]
 				]
+
+				row << machine["uuid"] if options.uuid
+
+				row << machine["template"]
+				row << machine["created_at"]
+
+				rows << row
 			end
 
-			table = Terminal::Table.new :headings => ['Name', 'State', 'UUID','Template','Created'], :rows => rows
+
+			headers = ['Name', 'State']
+			headers << 'UUID' if options.uuid
+			headers << 'Template'
+			headers << 'Created'
+
+			table = Terminal::Table.new :headings => headers, :rows => rows
 
 			puts table
 		else
@@ -102,7 +114,7 @@ http://help.10xengineer.me/categories/20068923-labs-documentation
 		unless key
 			file_location = Labs::Config.instance.keys[Labs::Config.instance.default_key] || ""
 			if is_windows && !File.exists?(file_location)
-				abort %Q{Registered SSH Key for machine is not loaded in Pageant!
+				abort %Q{Registered SSH Key for machine is not configure or loaded in Pageant!
 
 For more information, visit
 http://help.10xengineer.me/categories/20068923-labs-documentation}
