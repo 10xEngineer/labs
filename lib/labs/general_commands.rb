@@ -73,6 +73,19 @@ command :configure do |c|
 	end
 end
 
+is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
+if is_windows
+	command :keygen do |c|
+		c.description = "Run SSH Key generator"
+
+		c.action do |args, options|
+				require 'labs/win32/ssh_exec'
+
+				Labs::Win32::keygen
+		end
+	end
+end
+
 command :status do |c|
 	c.description = "Verify Labs API endpoint"
 
