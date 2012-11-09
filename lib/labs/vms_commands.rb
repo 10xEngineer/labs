@@ -12,12 +12,14 @@ command :create do |c|
 	c.option '--size SIZE', String, 'Lab machine size (default 512 MB)'
 	c.option '--name NAME', String, 'Use specific Lab Machine name'
 	c.option '--key KEY', String, 'SSH Key name to use (as registered within management panel)'
+	c.option '--http PORT', String, 'Setup HTTP forwarding to specified port'
 
 	c.action do |args, options|
 		options.default :pool => 'default'
 		options.default :template => 'ubuntu-precise64'
 		options.default :size => '512'
 		options.default :key => Labs::Config.instance.default_key || "default"
+		options.default :http => nil
 
 		machine_size = options.size.to_i
 		unless machine_size % 256 == 0 and machine_size >= 512
@@ -32,6 +34,10 @@ command :create do |c|
 		}
 
 		data[:name] = options.name if options.name
+
+		data[:port_mapping] = {
+			:http => options.http
+		} if options.http
 
 		client = Labs::Config.instance.client
 
@@ -217,6 +223,15 @@ command :show do |c|
 			fingerprint = "n/a"
 		end
 
+		if machine["token"]
+			endpoint = "#{machine["token"]}.#{machine["microcloud"]}"
+		end
+
+		mapping = machine["port_mapping"] || {}
+		mappings = []
+		mapping.keys.each do |serv|
+			mappings << "#{serv}(#{mapping[serv]})"
+		end
 
 		rows = []
 
@@ -229,6 +244,10 @@ command :show do |c|
 		rows << ['Snapshots', 1]
 		rows << ['Total Storage', 'n/a']
 		rows << ['SSH client',ssh_str]
+		if endpoint
+			rows << ['Endpoint', endpoint]
+			rows << ['Service fwd', mappings.join(',')]
+		end
 		rows << ['Key fingerprint', fingerprint]
 		rows << ['Created', machine["created_at"]]
 		rows << ['Updated', machine["updated_at"]]
