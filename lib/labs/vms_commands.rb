@@ -232,8 +232,6 @@ command :show do |c|
 		client = Labs::Config.instance.client
 		machine = client.get(:machine, name)
 
-		puts machine.inspect
-
 		# TODO refactor ^^
 		if machine["ssh_proxy"]
 			ssh_proxy = machine["ssh_proxy"]
