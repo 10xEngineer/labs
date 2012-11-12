@@ -100,6 +100,8 @@ command :ssh do |c|
 
 		ssh_proxy = machine["ssh_proxy"]
 
+		abort "Machine not available." unless machine["state"] == "started"
+
 		begin
 			key = Labs::SSH.agent_key(ssh_proxy["fingerprint"])
 		rescue Net::SSH::Authentication::AgentNotAvailable
@@ -200,6 +202,27 @@ command :revert do |c|
 	end
 end
 
+command :ps do |c|
+	c.description = "Process status"
+
+	c.action do |args, options|
+		name = get_machine_name(args)
+
+		client = Labs::Config.instance.client
+		processes = client.get_ext("/machines/#{name}/processes")
+
+		headers = ["USER", "PID", "%CPU", "%MEM", "VSZ", "RSS", "TIME", "COMMAND"]
+
+		puts headers.join("\t")
+		processes.each do |p|
+			#puts process
+			out = headers.map {|h| p[h.downcase]}.join("\t")
+
+			puts out
+		end
+	end
+end
+
 command :show do |c|
 	c.description = "Show machine details"
 
@@ -208,6 +231,8 @@ command :show do |c|
 
 		client = Labs::Config.instance.client
 		machine = client.get(:machine, name)
+
+		puts machine.inspect
 
 		# TODO refactor ^^
 		if machine["ssh_proxy"]
