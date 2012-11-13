@@ -29,23 +29,24 @@ command :configure do |c|
 		puts
 
 		default_key = ask("Alias of SSH Key to use: ") {|q| q.default = "default"}
-		key_location = ask("Full path (including filename) of private SSH Key (empty for ssh-agent only): ")
+		if $is_windows
+			key_location = ask("Full path (including filename) of private SSH Key (empty for ssh-agent only): ")
 
-		key_location.gsub!(/\A['"]|['"]\Z/, '') if key_location
+			key_location.gsub!(/\A['"]|['"]\Z/, '') if key_location
 
-		unless key_location.empty?
-			key_location = key_location.rchomp('"').chomp('"')
-		else
-			key_location = nil
-		end		
+			if key_location && key_location.empty?
+				key_location = nil
+			end		
 
-		if key_location && !File.exists?(key_location)
-			abort "Unable to open #{key_location}"
+			if key_location && !File.exists?(key_location)
+				abort "Unable to open #{key_location}"
+			end
+
+			if File.directory?(key_location)
+				abort "Invalid location - expecting file, not directory"
+			end
 		end
 
-		if File.directory?(key_location)
-			abort "Invalid location - expecting file, not directory"
-		end
 
 		puts "Using '#{options.endpoint}' as default endpoint."
 		puts
