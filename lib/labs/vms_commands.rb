@@ -120,7 +120,7 @@ http://help.10xengineer.me/categories/20068923-labs-documentation
 		unless key
 			file_location = Labs::Config.instance.keys[Labs::Config.instance.default_key] || ""
 			if $is_windows && !File.exists?(file_location)
-				abort %Q{Registered SSH Key for machine is not configure or loaded in Pageant!
+				abort %Q{Registered SSH Key for machine is not configured in your .labs.rc or loaded in Pageant!
 
 For more information, visit
 http://help.10xengineer.me/categories/20068923-labs-documentation}
