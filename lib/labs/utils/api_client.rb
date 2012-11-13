@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'active_support/inflector'
+require 'labs/utils/pluralize'
 require 'httparty'
 require 'openssl'
 require 'base64'
@@ -125,7 +125,7 @@ module Labs
 		end
 
 		def resource_path(resource, resource_id = nil, append = nil)
-		  path = "/#{resource.to_s.pluralize}"
+		  path = "/#{pluralize(resource.to_s)}"
 		  path << "/#{resource_id}" if resource_id
 		  path << "/#{append}" if append
 
