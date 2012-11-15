@@ -7,6 +7,8 @@ module Labs
 		def self.create(options)
 			machine_size = options[:size]
 
+			options[:shell] = Labs::Config.instance.shell
+
 			unless machine_size % 256 == 0 and machine_size >= 512
 				raise Labs::CommandError, "Invalid machine size #{machine_size}MB. Specified size must be a multiple of 256 and >= 512"
 			end

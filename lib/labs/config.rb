@@ -6,12 +6,14 @@ module Labs
 	class Config
 		@@instance = nil
 
-		attr_reader :client, :default_key, :keys
+		# TODO other variables should be dynamic
+		attr_reader :client, :default_key, :keys, :shell
 
 		def initialize(config)
 			@client = Labs::APIClient.new(config[:endpoint], config[:token], config[:secret])
 			@default_key = config[:default_key]
 			@keys = config[:keys] || {}
+			@shell = config[:shell] || "bash"
 		end
 
 		def self.instance
