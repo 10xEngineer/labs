@@ -80,6 +80,41 @@ command :configure do |c|
 	end
 end
 
+command :launch do |c|
+	c.description = "Create and SSH into a new Lab Machine"
+
+	c.option '--template TEMPLATE', String, 'Lab machine template to use'
+	c.option '--size SIZE', Integer, 'Lab machine size (default 512 MB)'
+	c.option '--name NAME', String, 'Use specific Lab Machine name'
+	c.option '--key KEY', String, 'SSH Key name to use (as registered within management panel)'
+	c.option '--http PORT', String, 'Setup HTTP forwarding to specified port'
+
+	c.action do |args, options|
+		options.default :pool => 'default'
+		options.default :template => 'ubuntu-precise64'
+		options.default :size => 512
+		options.default :key => Labs::Config.instance.default_key || "default"
+		options.default :http => nil
+
+		data = {
+			:pool => options.pool,
+			:template => options.template,
+			:size => options.size,
+			:key => options.key,
+			:name => options.name
+		}
+
+		data[:port_mapping] = {:http => options.http} if options.http
+
+		res = Labs::Machines.create(data)
+
+		puts "Machine '#{res["name"]}' #{res["state"]}."
+		puts
+
+		Labs::MachinesLogic.ssh(res["name"])
+	end
+end
+
 if $is_windows
 	command :keygen do |c|
 		c.description = "Run SSH Key generator"
