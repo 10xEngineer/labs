@@ -113,6 +113,7 @@ module Labs
 				'Accept' => 'application/json',
 				# TODO UTC missing on windows/ruby 1.8.7 (2008-08-11 patchlevel 72) [i386-cygwin]
 				'X-Labs-Date' => Time.now.utc.strftime("%a, %e %b %Y %H:%M:%S UTC"),
+				#'X-Labs-Date' => Time.now.utc.strftime("%a, %e %b %Y %H:%M:%S UTC"),
 				'X-Labs-Token' => @token,
 				'User-Agent' => "labs-gem/#{Labs::VERSION} (#{CONFIG["host"]}) #{CONFIG["RUBY_INSTALL_NAME"]}/#{RUBY_VERSION}-p#{CONFIG["PATCHLEVEL"]} "
 			}
