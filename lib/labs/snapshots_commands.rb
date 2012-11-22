@@ -24,8 +24,14 @@ command :list do |c|
 			rows = []
 
 			snapshots.each do |snapshot|
+				if snapshot["machine_name"]
+					snapshot_name = "#{snapshot["machine_name"]}@#{snapshot["name"]}"
+				else
+					snapshot_name = snapshot["name"]
+				end
+
 				rows << [
-					snapshot["name"],
+					snapshot_name,
 					snapshot["used_size"],
 					snapshot["created_at"]
 				]
