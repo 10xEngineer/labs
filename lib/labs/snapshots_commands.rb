@@ -46,6 +46,30 @@ command :list do |c|
 	end
 end
 
+command :persist do |c|
+	c.description = "Create persitent snapshot"
+
+	c.option '--source NAME', String, "Snapshot name"
+
+	c.action do |args, options|
+		abort "Source required (machine@snapshot)" unless options.source
+
+		name = get_machine_name(args)
+		abort "Snapshot name missing" unless name
+
+		regex = options.source.match /([a-z0-9\-]+)@([\w\-]{3,32})/
+		abort "Invalid source name. Format is machine-name@snapshot_name" unless regex
+		
+		machine = regex.captures.first
+		snapshot_name = regex.captures.last
+
+		client = Labs::Config.instance.client
+		snapshot = client.post_ext("/machines/#{machine}/snapshots/#{snapshot_name}/persist", {:name => name})
+
+		puts "Snapshot persisted."
+	end
+end
+
 command :destroy do |c|
 	c.description = "destroy a snapshot"
 
