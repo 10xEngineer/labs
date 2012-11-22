@@ -8,11 +8,17 @@ command :list do |c|
 	c.description = "list available snapshots"
 
 	c.action do |args, options|
-		name = get_machine_name(args)
+		name = get_machine_name(args, true)
 
 		client = Labs::Config.instance.client
 
-		snapshots = client.get_ext("/machines/#{name}/snapshots")
+		if name
+			url = "/machines/#{name}/snapshots"
+		else
+			url = "/snapshots"
+		end
+
+		snapshots = client.get_ext(url)
 
 		unless snapshots.empty?
 			rows = []
