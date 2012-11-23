@@ -73,18 +73,31 @@ end
 command :destroy do |c|
 	c.description = "destroy a snapshot"
 
-	c.option '--name NAME', String, "Snapshot name"
-
 	c.action do |args, options|
 		options.default :name => nil
 
 		name = get_machine_name(args)
 
-		abort "Snapshot name missing" unless options.name
+		regex_instant = name.match /([a-z0-9\-]+)@([\w\-]{3,32})/
+		regex_persistent = name.match /([\w\-]{3,32})/
+
+		abort "Invalid snapshot name. Format is machine-name@snapshot_name or snapshotname for persistent snapshots" unless regex_instant || regex_persistent
+
+		if regex_instant
+			machine = regex_instant.captures.first
+			snapshot_name = regex_instant.captures.last
+		elsif regex_persistent
+			snapshot_name = regex_persistent.captures.first
+		end
+			
 
 		client = Labs::Config.instance.client
-		snapshot = client.delete_ext("/machines/#{name}/snapshots/#{options.name}")
+		if machine
+			snapshot = client.delete_ext("/machines/#{machine}/snapshots/#{snapshot_name}")
+		else
+			snapshot = client.delete_ext("/snapshots/#{snapshot_name}")
+		end
 
-		puts "Snapshot '#{options.name}' destroyed."
+		puts "Snapshot '#{snapshot_name}' destroyed."
 	end
 end
