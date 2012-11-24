@@ -206,6 +206,36 @@ command :show do |c|
 	end
 end
 
+command :update do |c|
+	c.description = "Update Machine properties"
+
+	c.option '--http PORT', "Set http forwarding (0 to disable)"
+
+	c.action do |args, options|
+		options.default :http => nil
+		name = get_machine_name(args)
+
+		client = Labs::Config.instance.client
+		machine = client.get(:machine, name)
+
+		port_mapping = machine["port_mapping"] || {}
+
+		if options.http
+			if options.http == 0
+				port_mapping.delete("http")
+			else
+				port_mapping["http"] = options.http
+			end
+		end
+
+		data = {
+			port_mapping: port_mapping
+		}
+
+		res = client.put_ext("/machines/#{name}", data)
+	end
+end
+
 command :destroy do |c|
 	c.description = "pernamently destroy a VM"
 
