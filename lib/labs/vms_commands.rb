@@ -229,7 +229,7 @@ command :update do |c|
 		end
 
 		data = {
-			:port_mapping => port_mapping
+				:port_mapping => port_mapping
 		}
 
 		res = client.put_ext("/machines/#{name}", data)

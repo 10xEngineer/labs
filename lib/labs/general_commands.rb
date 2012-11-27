@@ -8,7 +8,7 @@ command :configure do |c|
 	c.option '--endpoint ENDPOINT', String, 'Microcloud endpoint URL'
 
 	c.action do |args, options|
-		options.default :endpoint => "http://api.eu-1-aws.10xlabs.net/"
+		options.default :endpoint => "https://api.eu-1-aws.10xlabs.net/"
 		config_file = File.join(ENV['HOME'], Labs::CONFIG_FILE)
 
 		if File.exists?(config_file)
